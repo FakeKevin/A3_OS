@@ -34,8 +34,6 @@ https://stackoverflow.com/questions/1352749/multiple-arguments-to-function-calle
 https://stackoverflow.com/questions/36050901/how-to-pass-command-line-arguments-to-thread-function
 */
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -48,6 +46,11 @@ typedef struct my_args{
   char **array;
 };
 
+//Global variables
+double avg;
+int min;
+int max;
+
 //Function prototypes
 void *findAvg(void *args);
 void *findMin(void *args);
@@ -56,20 +59,30 @@ void *findMax(void *args);
 int main(int ac, char *av[])
 {
 	//Initialize thread id values	
-  pthread_t tid1 = 1;
-  pthread_t tid2 = 2;
-  pthread_t tid3 = 3;
+	pthread_t tid1 = 1;
+	pthread_t tid2 = 2;
+	pthread_t tid3 = 3;
+	
 	//Create our struct and pass values to the struct
-  struct my_args args1; 
-  args1.length = ac;
-  args1.array = av;
+	struct my_args args1; 
+	args1.length = ac;
+	args1.array = av;
+	
 	//Create our threads and start them
-  pthread_create(&tid1, NULL, findAvg, &args1);
-  pthread_create(&tid2, NULL, findMin, &args1);
-  pthread_create(&tid3, NULL, findMax, &args1);
-  pthread_join (tid1, NULL);
-  pthread_join (tid2, NULL);
-  pthread_join (tid3, NULL);
+	pthread_create(&tid1, NULL, findAvg, &args1);	
+	pthread_create(&tid2, NULL, findMin, &args1);
+	pthread_create(&tid3, NULL, findMax, &args1);
+	
+	pthread_join(tid1, NULL);
+	pthread_join(tid2, NULL);
+	pthread_join(tid3, NULL);
+	
+	//Now print out the results in our global variables
+	printf("The average of the integers recieved is: %.2f.\n",avg);
+	
+	printf("The minimum of the integers recieved is: %d.\n",min);
+	
+	printf("The maximum of the integers recieved is: %d.\n",max);
 
   return 1;
 }
@@ -82,64 +95,63 @@ void *findAvg(void *args)
 	//the end.
 	
 	//Convert the void pointer to a struct pointer of our struct
-  struct my_args* thing = args;
-  //Grab the length and save to a local variable
-  int length = thing->length;
-  //Grab the array pointer and save to a local variable
-  char **av = thing->array;
-  double avg = 0.0;
-
+  	struct my_args* thing = args;
+	//Grab the length and save to a local variable
+	int length = thing->length;
+	//Grab the array pointer and save to a local variable
+	char **av = thing->array;
+	avg = 0.0;
+	
 	//Loop through values here:
-  int n = 1;
+	int n = 1;
+	
+	for(n = 1; n < length; n++)
+	{
+	    avg += atoi(av[n]);
+	}
+	avg = avg/(length-1);
 
-  for(n = 1; n < length; n++)
-    {
-      avg += atoi(av[n]);
-    }
-  avg = avg/(length-1);
-
-  printf("The average of the integers recieved is: %.2f.\n",avg);
 }
 
 // Function finds the minimum value between the given values
 void *findMin(void *args)
 {
 
-	//Comments here are pretty much the same
-  struct my_args* thing = args;
-  int length = thing->length;
-  char **av = thing->array;
-  int min = atoi(av[1]);
-  int n = 0;
+	//Comments here are pretty much the same as the ones
+	//for findAvg
+  	struct my_args* thing = args;
+  	int length = thing->length;
+  	char **av = thing->array;
+  	min = atoi(av[1]);
+  	int n = 0;
 
-  for(n = 1; n < length; n++)
+  	for(n = 1; n < length; n++)
     {
-      int temp = atoi(av[n]);
-      if (temp < min)
+      	int temp = atoi(av[n]);
+      	if (temp < min)
         {
           min = temp;
         }
     }
-  printf("The minimum of the integers recieved is: %d.\n",min);
 }
 
 void *findMax(void *args)
 {
-	//Comments here are pretty much the same
-  struct my_args* thing = args;
-  int length = thing->length;
-  char **av = thing->array;
-
-  int max = atoi(av[1]);
-  int n = 0;
-
-  for(n = 1; n < length; n++)
+	//Comments here are pretty much the same as the ones
+	//for findAvg
+  	struct my_args* thing = args;
+  	int length = thing->length;
+  	char **av = thing->array;
+	
+  	max = atoi(av[1]);
+  	int n = 0;
+	
+  	for(n = 1; n < length; n++)
     {
-      int temp = atoi(av[n]);
-      if (temp > max)
+      	int temp = atoi(av[n]);
+      	if (temp > max)
         {
-          max = temp;
+          	max = temp;
         }
     }
-  printf("The maximum of the integers recieved is: %d.\n",max);
 }
