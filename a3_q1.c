@@ -34,29 +34,36 @@ https://stackoverflow.com/questions/1352749/multiple-arguments-to-function-calle
 https://stackoverflow.com/questions/36050901/how-to-pass-command-line-arguments-to-thread-function
 */
 
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
 
+//Struct that is used to hold the data required to perform calculations
+//Contains the number of arguments given on the command line and
+//a pointer to those arguments
 typedef struct my_args{
   int length;
   char **array;
 };
 
+//Function prototypes
 void *findAvg(void *args);
 void *findMin(void *args);
 void *findMax(void *args);
 
 int main(int ac, char *av[])
 {
+	//Initialize thread id values	
   pthread_t tid1 = 1;
   pthread_t tid2 = 2;
   pthread_t tid3 = 3;
-
-  struct my_args args1;
+	//Create our struct and pass values to the struct
+  struct my_args args1; 
   args1.length = ac;
   args1.array = av;
-
+	//Create our threads and start them
   pthread_create(&tid1, NULL, findAvg, &args1);
   pthread_create(&tid2, NULL, findMin, &args1);
   pthread_create(&tid3, NULL, findMax, &args1);
@@ -67,13 +74,22 @@ int main(int ac, char *av[])
   return 1;
 }
 
+// Function finds the average between the given values
 void *findAvg(void *args)
 {
+	//After obtaining the data from the struct,
+	//loop through the values, calculating the average at
+	//the end.
+	
+	//Convert the void pointer to a struct pointer of our struct
   struct my_args* thing = args;
+  //Grab the length and save to a local variable
   int length = thing->length;
+  //Grab the array pointer and save to a local variable
   char **av = thing->array;
   double avg = 0.0;
 
+	//Loop through values here:
   int n = 1;
 
   for(n = 1; n < length; n++)
@@ -85,12 +101,14 @@ void *findAvg(void *args)
   printf("The average of the integers recieved is: %.2f.\n",avg);
 }
 
+// Function finds the minimum value between the given values
 void *findMin(void *args)
 {
+
+	//Comments here are pretty much the same
   struct my_args* thing = args;
   int length = thing->length;
   char **av = thing->array;
-
   int min = atoi(av[1]);
   int n = 0;
 
@@ -107,6 +125,7 @@ void *findMin(void *args)
 
 void *findMax(void *args)
 {
+	//Comments here are pretty much the same
   struct my_args* thing = args;
   int length = thing->length;
   char **av = thing->array;
