@@ -4,7 +4,7 @@ Operating Systems Design and Systems Programming
 
 Assignment #3 - SYST 44288
 
-Git bash was used to push the code to this repository.
+XGit bash was used to push the code to this repository.
 
 ## Question 1
 
