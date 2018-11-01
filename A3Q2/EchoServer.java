@@ -70,7 +70,6 @@ public class EchoServer {
 			out = new DataOutputStream(client.getOutputStream());
 
 			this.start();
-
 		   }
 	    		catch(IOException ioe)
 		           {
@@ -78,13 +77,13 @@ public class EchoServer {
              		   }
 	}
 
-	public void run () 
+	 public void run () 
 	   {
 		try 
 		   {
+			//While the connection exists, call the EchoMessage method
 			while (true) 
 			   {
-				//While the connection exists, call the EchoMessage method
 				EchoMessage(in, out);
 			   }
 
@@ -95,6 +94,7 @@ public class EchoServer {
 			   }
 	   }
     }
+	
 	//This method echos what the client inputs to the server
 	public void EchoMessage(InputStream in, DataOutputStream out) throws IOException 
 	   {
