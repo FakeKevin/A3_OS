@@ -25,78 +25,98 @@ import java.net.*;
 import java.io.*;
 
 public class EchoServer {
-
+	// Initialize the port number and the client socket
 	private int port = 6013;
 	private Socket client;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	   {
 		new EchoServer();
-	}
+	   }
 
-	public EchoServer(){
-		try {
+	public EchoServer()
+	   {
+		try 
+		   {
+			// Create the server socket
 			ServerSocket sock = new ServerSocket(port);
 			System.out.println("Starting server connection on port: " + port);
+			
 			// Continuously accept new connections
-			while(true) {
-			// Start a new thread
+			while(true) 
+			   {
+				// Create a new thread
 				new ClientThreads(sock.accept());
-				System.out.println("[Server]: A new client has connected.");
-			}
+				System.out.println("Server: A new client has connected.");
+			   }
+		   }
+			catch(IOException ioe)
+			   {
+                		System.err.println(ioe);
+         	 	   }
+	   }
 
-		}catch(IOException ioe){
-                System.err.println(ioe);
-         }
-	}
-
- private class ClientThreads extends Thread{
+ private class ClientThreads extends Thread
+    {
 	private InputStream in;
 	private DataOutputStream out;
 
-    ClientThreads (Socket client) {
-		try {
+    ClientThreads (Socket client) 
+       {
+		try 
+		   {
 			//Create in and out streams
 			in = client.getInputStream();
 			out = new DataOutputStream(client.getOutputStream());
 
 			this.start();
 
-			}catch(IOException ioe){
-                System.err.println(ioe);
-             }
+		   }
+	    		catch(IOException ioe)
+		           {
+               			 System.err.println(ioe);
+             		   }
 	}
 
-	public void run () {
-		try {
-			while (true) {
+	public void run () 
+	   {
+		try 
+		   {
+			while (true) 
+			   {
+				//While the connection exists, call the EchoMessage method
 				EchoMessage(in, out);
-			}
+			   }
 
-			}catch(IOException ioe){
-			System.err.println(ioe);
-			 }
-	}
- }
-
-	public void EchoMessage(InputStream in, DataOutputStream out) throws IOException{
-	//Create a buffer that will read the input stream
-        BufferedReader buffIn = new BufferedReader(new InputStreamReader(in));
-        String line = buffIn.readLine();
+		   }
+			catch(IOException ioe)
+			   {
+				System.err.println(ioe);
+			   }
+	   }
+    }
+	//This method echos what the client inputs to the server
+	public void EchoMessage(InputStream in, DataOutputStream out) throws IOException 
+	   {
+		//Create a buffer that will read the input stream
+        	BufferedReader buffIn = new BufferedReader(new InputStreamReader(in));
+        	String line = buffIn.readLine();
 
 			//While the client has not entered in nothing:
-			while (line != null){
-			//Sanitize input
-			line = sanitizeInput(line);
-			//Print back out at the client exactly what they entered in
-			PrintWriter pout = new PrintWriter(out, true);
-			pout.println("Server echoes back: "+line);
-			line = buffIn.readLine();
-			}
-	}
+			while (line != null)
+			   {
+				//Sanitize input
+				line = sanitizeInput(line);
+				//Print back out at the client exactly what they entered in
+				PrintWriter pout = new PrintWriter(out, true);
+				pout.println("Server echoes back: "+line);
+				line = buffIn.readLine();
+			   }
+	   }
 
     //This function sanitizes input. It will only allow A-Z & a-z,
     //numbers and spaces to be echoed back to the user.
-    private static String sanitizeInput(String original)
+    private static String sanitizeInput(String original) 
     {
         String newStr = "";
         String characters = " 1234567890aqwertyuiopsdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
@@ -108,8 +128,8 @@ public class EchoServer {
                 int good = 0;
                 //Loop through the good character list. Set a value if we
                 //have found a good character
-                for (int m = 0; m < characters.length();m++)
-                    {
+                for (int m = 0; m < characters.length();m++) 
+		    {
                         if(tempChar.equals(characters.substring(m, m+1)))
                             {
                                 good = 1;
@@ -117,10 +137,10 @@ public class EchoServer {
                             }
                     }
                 //Only if that character is good do we add it to the return string
-                if(good == 1)
-                    {
+                if(good == 1) 
+		{
                         newStr += tempChar;
-                    }
+                }
             }
         return newStr;
     }
